@@ -5,7 +5,13 @@ export const BASE_URL = 'http://localhost:8080/GradeManagement/';
 export const endpoints = {
     'courses': '/api/v1/courses',
     'subjects': '/api/v1/subjects',
-    'register': '/api/v1/users',
+}
+
+export const studentAPIs = {
+    'register': '/api/v1/students'
+}
+
+export const authAPIs = {
     'login': '/api/v1/auth/token',
     'current-user': '/api/v1/auth/currentUser'
 }

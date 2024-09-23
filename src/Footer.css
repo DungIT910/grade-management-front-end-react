@@ -1,0 +1,30 @@
+html, body {
+    height: 100%; 
+    margin: 0;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+footer {
+    background-color: #343a40; 
+    margin-top: auto; 
+}
+
+footer h5 {
+    border-bottom: 1px solid #495057; 
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+footer p {
+    margin: 0; 
+}
+
+footer .footer-text {
+    font-size: 1rem; 
+    line-height: 1.5; 
+}
