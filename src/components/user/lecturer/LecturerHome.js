@@ -1,10 +1,15 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
+import LecturerNavbar from './LecturerNavbar'
+import { Outlet } from 'react-router-dom'
 
 function LecturerHome() {
+
   return (
-    <div>
+    <>
+      <LecturerNavbar/>
       <h1>LECTURER HOME</h1>
-    </div>
+      <Outlet />
+    </>
   )
 }
 

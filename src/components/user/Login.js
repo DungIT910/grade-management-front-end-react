@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Container, Form } from "react-bootstrap";
+import { Button, Container, Form, Alert, Nav } from "react-bootstrap";
 import { Navigate, useNavigate } from "react-router-dom";
-import { Cookies, useCookies } from "react-cookie";
+import { useCookies } from "react-cookie";
 import { useAuth } from "../../configs/useAuth";
 import { MyDispatchContext, MyUserContext } from "configs/Contexts";
 import APIs, { authAPIs } from "configs/APIs";
-import useTokenManager from "components/commons/useTokenManager";
+import { Roles } from "constants/role";
 
 const Login = () => {
 	const fields = [
@@ -13,12 +13,12 @@ const Login = () => {
 		{ label: "Mật khẩu", type: "password", field: "password" },
 	];
 	const [user, setUser] = useState({});
+	const [errorMessage, setErrorMessage] = useState(null);
 	const dispatch = useContext(MyDispatchContext);
 	const currentUser = useContext(MyUserContext);
 	const authApi = useAuth();
 	const [cookies, setCookies] = useCookies(["token"]);
 	const nav = useNavigate();
-	const useToken = useTokenManager();
 
 	const login = async (e) => {
 		e.preventDefault();
@@ -26,11 +26,17 @@ const Login = () => {
 		try {
 			let res = await APIs.post(authAPIs["login"], { ...user });
 			if (res.data) {
-				setCookies("token", res.data.accessToken);
+				setCookies("token", res.data.accessToken, { path: "/" });
+				setErrorMessage(null);
 			} else {
-				console.error("Invalid login response:", res);
+				setErrorMessage(
+					"Đăng nhập không thành công. Vui lòng thử lại."
+				);
 			}
 		} catch (ex) {
+			setErrorMessage(
+				"Đăng nhập không thành công. Vui lòng kiểm tra lại"
+			);
 			console.error(ex);
 		}
 	};
@@ -39,9 +45,14 @@ const Login = () => {
 		const fetchUser = async () => {
 			if (cookies.token) {
 				try {
-					let u = await authApi().get(authAPIs["current-user"]);
-					dispatch({ type: "login", payload: u.data });
-					nav("/");
+					if (!currentUser) {
+						let u = await authApi().get(authAPIs["current-user"]);
+						dispatch({ type: "login", payload: u.data });
+						localStorage.setItem("currentUser", JSON.stringify(u.data));
+						goToHome(u.data)
+					} else {
+						goToHome(currentUser)
+					}
 				} catch (error) {
 					console.error("Failed to fetch user:", error);
 				}
@@ -51,14 +62,29 @@ const Login = () => {
 		fetchUser();
 	}, [cookies.token, currentUser]);
 
+	const goToHome = (user) => {
+		switch (user.role) {
+			case Roles.ADMIN:
+				nav("/admin");
+				break;
+			case Roles.LECTURER:
+				nav("/lecturer");
+				break;
+			case Roles.STUDENT:
+				nav("/student");
+				break;
+			default:
+				console.error("role is not found");
+		}
+	};
+
 	const change = (event, field) => {
 		setUser((current) => ({ ...current, [field]: event.target.value }));
 	};
 
-	if (currentUser !== null) return <Navigate to="/" />;
-
 	const goToRegister = (event) => {
 		event.preventDefault();
+		console.info("navigate to register");
 		nav("/register");
 	};
 
@@ -77,6 +103,10 @@ const Login = () => {
 					<h2 className="text-center text-info mb-5">
 						ĐĂNG NHẬP NGƯỜI DÙNG
 					</h2>
+
+					{errorMessage && (
+						<Alert variant="danger">{errorMessage}</Alert>
+					)}
 
 					{fields.map((f) => (
 						<Form.Group
