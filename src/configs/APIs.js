@@ -2,13 +2,13 @@ import axios from "axios";
 
 export const BASE_URL = 'http://localhost:8080/GradeManagement/';
 
-export const endpoints = {
-    'courses': '/api/v1/courses',
-    'subjects': '/api/v1/subjects',
+export const courseAPIs = {
+    'getCourse': '/api/v1/courses/search'
 }
 
 export const studentAPIs = {
-    'register': '/api/v1/students'
+    'createStudents': '/api/v1/students',
+    'getStudents': '/api/v1/students/search'
 }
 
 export const authAPIs = {

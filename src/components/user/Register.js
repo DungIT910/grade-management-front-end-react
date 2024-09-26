@@ -69,7 +69,7 @@ const Register = () => {
         form.append("avatar", avatar.current.files[0]);
 
         try {
-            let res = await APIs.post(studentAPIs["register"], form, {
+            let res = await APIs.post(studentAPIs["createStudents"], form, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },

@@ -3,7 +3,7 @@ import { BASE_URL } from './APIs';
 import axios from 'axios';
 
 export const useAuth = () => {
-    const [cookies, setCookies] = useCookies(['token']);
+    const [cookies] = useCookies(['token']);
 
     const authApi = () => {
         return axios.create({
